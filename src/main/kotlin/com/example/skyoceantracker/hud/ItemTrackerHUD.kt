@@ -1,6 +1,6 @@
 package com.example.skyoceantracker.hud
 
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.Screen
 import net.minecraft.network.chat.Component
 
@@ -9,7 +9,8 @@ import net.minecraft.network.chat.Component
  * This class will handle rendering the overlay and integrating with SkyOcean's APIs
  */
 class ItemTrackerHUD : Screen(Component.literal("SkyOcean Item Tracker HUD")) {
-    override fun render(guiGraphics: GuiGraphics, mouseX: Int, mouseY: Int, partialTick: Float) {
+    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, mouseX: Int, mouseY: Int, partialTick: Float) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick)
         // TODO: Implement HUD rendering
         // Use SkyOcean's inventory search and storage functions here
     }

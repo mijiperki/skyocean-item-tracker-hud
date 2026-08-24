@@ -2,26 +2,32 @@ package com.example.skyoceantracker.hud.display
 
 import com.example.skyoceantracker.hud.ItemTrackerOverlay
 import com.example.skyoceantracker.hud.ItemTrackerTree
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
-import net.minecraft.client.gui.GuiGraphics
-import net.minecraft.client.renderer.texture.TextureAtlasSprite
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
+import net.minecraft.client.DeltaTracker
+import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.resources.Identifier
 import org.slf4j.LoggerFactory
 
 /**
  * Handles rendering of the Item Tracker overlay on screen
  * Mimics SkyOcean's CraftHelperDisplay rendering style
  */
-object ItemTrackerDisplay : HudRenderCallback {
+object ItemTrackerDisplay : HudElement {
     private val logger = LoggerFactory.getLogger("ItemTrackerDisplay")
 
     private var isVisible = false
     private var lastTree: ItemTrackerTree? = null
 
     init {
-        HudRenderCallback.EVENT.register(this)
+        HudElementRegistry.addLast(
+            Identifier.fromNamespaceAndPath("skyoceantracker", "item_tracker"),
+            this
+        )
     }
 
-    override fun onHudRender(guiGraphics: GuiGraphics, partialTick: Float) {
+    override fun extractRenderState(guiGraphics: GuiGraphicsExtractor, deltaTracker: DeltaTracker) {
         if (!isVisible) return
 
         val tree = ItemTrackerOverlay.getCurrentTree() ?: return
@@ -42,7 +48,7 @@ object ItemTrackerDisplay : HudRenderCallback {
         lastTree = null
     }
 
-    private fun renderTree(guiGraphics: GuiGraphics, tree: ItemTrackerTree) {
+    private fun renderTree(guiGraphics: GuiGraphicsExtractor, tree: ItemTrackerTree) {
         // TODO: Implement rendering
         // This should:
         // 1. Draw the background (similar to SkyOcean's tooltip background)
@@ -55,9 +61,9 @@ object ItemTrackerDisplay : HudRenderCallback {
         val y = 10
 
         // Placeholder: Just render item name for now
-        guiGraphics.drawString(
-            guiGraphics.guiRenderingContext.font,
-            "${tree.item.hoverName.string}",
+        guiGraphics.text(
+            Minecraft.getInstance().font,
+            tree.item.hoverName.string,
             x,
             y,
             0xFFFFFF

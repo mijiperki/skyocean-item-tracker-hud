@@ -3,6 +3,7 @@ package com.example.skyoceantracker.hud
 import net.minecraft.world.item.ItemStack
 import org.slf4j.LoggerFactory
 import com.example.skyoceantracker.integration.SkyOceanAPIBridge
+import com.example.skyoceantracker.hud.display.ItemTrackerDisplayBridge
 
 /**
  * Manages a separate item tracker tree system that mimics CraftHelper

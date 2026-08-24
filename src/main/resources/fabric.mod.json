@@ -16,6 +16,7 @@
     ]
   },
   "mixins": [],
+  "accessWidener": "skyocean_item_tracker.accesswidener",
   "depends": {
     "fabricloader": ">=0.16.0",
     "fabric-api": "*",

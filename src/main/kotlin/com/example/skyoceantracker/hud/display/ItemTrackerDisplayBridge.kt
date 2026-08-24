@@ -24,7 +24,7 @@ object ItemTrackerDisplayBridge {
     fun showOverlay(itemStack: ItemStack, amount: Int, tree: Any) {
         try {
             val minecraft = Minecraft.getInstance()
-            val screen = minecraft.screen as? AbstractContainerScreen<*> ?
+            val screen = minecraft.screen as? AbstractContainerScreen<*>
             if (screen == null) {
                 logger.warn("No container screen open")
                 return

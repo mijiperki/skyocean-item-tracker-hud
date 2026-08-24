@@ -27,7 +27,7 @@ object ItemTrackerManager {
         } catch (e: Exception) {
             logger.error("Error getting hovered slot: ", e)
             null
-        } ?
+        }
         if (hoveredSlot == null) {
             logger.info("No item hovered")
             return

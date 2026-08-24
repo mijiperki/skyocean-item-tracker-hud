@@ -2,9 +2,10 @@ package com.example.skyoceantracker.keybind
 
 import com.mojang.blaze3d.platform.InputConstants
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
 import net.minecraft.client.KeyMapping
 import net.minecraft.client.Minecraft
+import net.minecraft.resources.Identifier
 import org.lwjgl.glfw.GLFW
 import com.example.skyoceantracker.integration.InventoryHelper
 import com.example.skyoceantracker.hud.ItemTrackerManager
@@ -14,12 +15,16 @@ import org.slf4j.LoggerFactory
 object ItemTrackerKeybinds {
     private val logger = LoggerFactory.getLogger("ItemTrackerKeybinds")
 
-    private val itemTrackerKey = KeyBindingHelper.registerKeyBinding(
+    private val category: KeyMapping.Category = KeyMapping.Category.register(
+        Identifier.fromNamespaceAndPath("skyoceantracker", "item_tracker")
+    )
+
+    private val itemTrackerKey = KeyMappingHelper.registerKeyMapping(
         KeyMapping(
             "key.skyoceantracker.item_tracker",
             InputConstants.Type.KEYSYM,
             GLFW.GLFW_KEY_SLASH,
-            "category.skyoceantracker.item_tracker"
+            category
         )
     )
 

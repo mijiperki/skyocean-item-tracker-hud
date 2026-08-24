@@ -21,11 +21,6 @@ object ScreenEventListener {
                 onScreenInit(screen)
             }
         }
-
-        // Listen for mouse clicks
-        ScreenEvents.BEFORE_MOUSE_CLICK.register { client, screen, mouseX, mouseY, button ->
-            false // Don't consume event
-        }
     }
 
     private fun onScreenInit(screen: AbstractContainerScreen<*>) {
