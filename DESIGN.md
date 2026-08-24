@@ -3,8 +3,7 @@
 A client-side Fabric mod for Hypixel SkyBlock that reimplements SkyOcean's
 single-item **Craft Helper** and lets you keep **multiple craft recipe trees on
 screen at once**, so you can work toward several items without swapping the active
-one. Built and tested against **Minecraft 1.21.11 (Java 21)**; see §2 for why not
-26.1.2.
+one. Built against **Minecraft 26.1.2 (Java 25)**; see §2 for the toolchain.
 
 ## 1. Goal & scope
 Reimplement the single-item Craft Helper exactly — item + amount → recursive
@@ -21,17 +20,21 @@ integration; **any automation of crafting or input** (Hypixel rules — the mod 
 display-only).
 
 ## 2. Target & stack
-- **Minecraft 1.21.11**, **Java 21**, **Fabric**, client-only. (Build verified:
+- **Minecraft 26.1.2**, **Java 25**, **Fabric**, client-only. (Build verified:
   Gradle 9.7.1 + Loom 1.15.5, `./gradlew build` green, 6/6 tests, jar produced.)
 - **Kotlin 2.4.0** + Fabric Language Kotlin, matching the SkyBlock-mod ecosystem.
-- **Official Mojang mappings** (available for 1.21.x), Fabric Loader 0.18.3,
-  Fabric API 0.141.6+1.21.11, Loom 1.15-SNAPSHOT.
+- Fabric Loader 0.19.3, Fabric API 0.155.2+26.1.2 (matching the user's runtime).
 
-> **Why not 26.1.2?** The year-based release has no public obfuscation mappings —
-> Mojang's release JSON ships only `client`/`server` jars (no `client_mappings`),
-> and Fabric has no Yarn for 26.x — so stock Loom can't map it. SkyOcean targets
-> 26.x via Stonecutter + a bespoke mapping setup (kikugie/teamresourceful mavens).
-> Supporting 26.x is a future Stonecutter target; we develop on 1.21.11 meanwhile.
+> **No mappings — 26.1+ is deobfuscated.** Mojang ships 26.1 with real class
+> names, so there are no obfuscation mappings and none are needed (hence no
+> `client_mappings` in the release JSON and no Yarn for 26.x). We use
+> [`dev.kikugie.loom-back-compat`](https://codeberg.org/KikuGie/loom-back-compat)
+> with `loomx.unobfuscated=true`: plain Fabric Loom, **no remapping**,
+> `loomx.applyMojangMappings()` is a no-op, and mod deps use `modImplementation`
+> (aliased to plain configs). The jar references real 26.1 names directly, so it
+> loads on the 26.1.2 runtime. Building for an older obfuscated version instead
+> remaps to intermediary names (e.g. `class_7157`) that 26.1.2 lacks — which is
+> what crashes such a jar on launch.
 
 ## 3. Data source (decision)
 SkyOcean does **not** own its recipe data; it consumes the open **NEU
@@ -61,7 +64,7 @@ config/   Config                                                          [pure]
 MultiCraft (runtime holder) / MultiCraftClient (entrypoint)               [mc]
 ```
 
-The `[mc]` files are the only ones whose API names depend on 26.1.2 mappings;
+The `[mc]` files are the only ones whose API names depend on the 26.1.2 client;
 everything they call into is verified pure code.
 
 ## 5. Recipe engine
@@ -94,7 +97,7 @@ everything they call into is verified pure code.
 `move <item> up|down` · `collapse <item>` · `hud` (toggle).
 
 ## 9. Milestones
-0. **Scaffold** — builds on 1.21.11, tests pass, jar produced. *(done)*
+0. **Scaffold** — builds on 26.1.2, tests pass, jar produced. *(done)*
 1. **Data** — full NEU/meowdding snapshot download + merge into the cache.
 2. **Counts** — ContainerScanner for inventory + ender chest wired to QuantityIndex.
 3. **HUD** — CraftHud drawing verified in-game for one target.
@@ -102,8 +105,8 @@ everything they call into is verified pure code.
 5. **Sacks/storage** + config screen.
 
 ## 10. Open questions / risks
-- 26.x support requires a Stonecutter + community-mapping setup (see §2); deferred.
-- The `[mc]` layer compiles against 1.21.11 but hasn't been exercised **in-game**
-  yet (HUD draw, screen scanning, sack parsing) — that's milestones 2–5.
+- The `[mc]` layer compiles against 26.1.2 and the entrypoint/commands/HUD now
+  resolve against the real runtime classes, but the drawing, screen scanning, and
+  sack parsing haven't been exercised **in-game** yet — that's milestones 2–5.
 - meowdding-repo/NEU attribution terms when bundling a full snapshot.
 - Sack-data freshness — no reliable push source; how aggressively to warn on stale.

@@ -3,11 +3,10 @@ package dev.tperkins.multicraft.command
 /*
  * ---------------------------------------------------------------------------
  * MINECRAFT INTEGRATION LAYER
- * These APIs target the Fabric client-command + Mojang-mappings shape as of the
- * 1.21.x era. Class/method names (ClientCommandRegistrationCallback,
- * FabricClientCommandSource, Component) MUST be verified against the actual
- * 26.1.2 Mojang mappings before this compiles. The logic they call into
- * (MultiCraft.targets, resolver, repo) is verified pure-JVM code.
+ * Targets Minecraft 26.1.2 (deobfuscated) + Fabric client-command API v2.
+ * On 26.1 the static command builders live on ClientCommands (not the old
+ * ClientCommandManager). The logic they call into (MultiCraft.targets, resolver,
+ * repo) is verified pure-JVM code.
  * ---------------------------------------------------------------------------
  */
 
@@ -15,8 +14,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType
 import com.mojang.brigadier.arguments.StringArgumentType
 import dev.tperkins.multicraft.MultiCraft
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.literal
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands.argument
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands.literal
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource
 import net.minecraft.network.chat.Component
 

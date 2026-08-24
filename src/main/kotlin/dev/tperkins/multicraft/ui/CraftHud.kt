@@ -3,19 +3,21 @@ package dev.tperkins.multicraft.ui
 /*
  * ---------------------------------------------------------------------------
  * MINECRAFT INTEGRATION LAYER
- * HUD rendering changed across recent versions (HudRenderCallback ->
- * HudLayerRegistrationCallback / HudElementRegistry). The registration and
- * GuiGraphics draw calls below target the 1.21.x shape and MUST be verified
- * against 26.1.2 mappings. The per-target line model comes from [TargetWidget],
- * which is pure, verified code — only the drawing here is mapping-sensitive.
+ * Targets Minecraft 26.1.2. The render-pipeline rewrite replaced HudRenderCallback
+ * with HudElementRegistry + HudElement.extractRenderState(GuiGraphicsExtractor, ..),
+ * and GuiGraphics with GuiGraphicsExtractor (text() instead of drawString()). The
+ * per-target line model comes from [TargetWidget], which is pure, verified code —
+ * only the drawing here is version-sensitive.
  * ---------------------------------------------------------------------------
  */
 
 import dev.tperkins.multicraft.MultiCraft
 import dev.tperkins.multicraft.config.Config
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiGraphics
+import net.minecraft.client.gui.GuiGraphicsExtractor
+import net.minecraft.resources.Identifier
 
 /**
  * Draws every active craft target, stacked, in one anchored panel. This is the
@@ -28,12 +30,13 @@ object CraftHud {
     private const val PANEL_GAP = 4
 
     fun register() {
-        HudRenderCallback.EVENT.register(HudRenderCallback { graphics, _ ->
-            render(graphics)
-        })
+        HudElementRegistry.addLast(
+            Identifier.fromNamespaceAndPath(MultiCraft.MOD_ID, "craft_hud"),
+            HudElement { graphics, _ -> render(graphics) },
+        )
     }
 
-    private fun render(graphics: GuiGraphics) {
+    private fun render(graphics: GuiGraphicsExtractor) {
         val config = MultiCraft.config
         if (!config.hudEnabled || MultiCraft.targets.isEmpty()) return
         val mc = Minecraft.getInstance()
@@ -51,12 +54,12 @@ object CraftHud {
 
         val screenW = graphics.guiWidth()
         val screenH = graphics.guiHeight()
-        var x = anchorX(config, screenW, panelWidth)
+        val x = anchorX(config, screenW, panelWidth)
         var y = anchorY(config, screenH, panelHeight)
 
         for (panel in panels) {
             for (line in panel) {
-                graphics.drawString(font, line.text, x + line.indent * INDENT_PX, y, line.argb, true)
+                graphics.text(font, line.text, x + line.indent * INDENT_PX, y, line.argb, true)
                 y += LINE_HEIGHT
             }
             y += PANEL_GAP

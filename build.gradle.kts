@@ -1,5 +1,7 @@
 plugins {
-    id("fabric-loom") version "1.15-SNAPSHOT"
+    // Version + Loom-variant selection is configured in settings.gradle.kts and
+    // gradle.properties (loomx.*). This applies the correct fabric-loom under the hood.
+    id("dev.kikugie.loom-back-compat")
     kotlin("jvm") version "2.4.0"
 }
 
@@ -22,14 +24,19 @@ val fabricApiVersion: String by project
 val fabricLanguageKotlinVersion: String by project
 
 dependencies {
+    // Minecraft 26.1+ is shipped DEOBFUSCATED by Mojang, so there is no
+    // obfuscation/intermediary layer and NO `mappings(...)` declaration: Loom
+    // uses the real names directly. (See gradle.properties for why.)
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    // A fresh mod: use official Mojang mappings so we don't depend on a Yarn
-    // build being published for 26.1.2. (SkyOcean uses its own mappings setup.)
-    mappings(loom.officialMojangMappings())
+    // No-op on deobfuscated 26.1+ (there are no Mojang mappings to apply);
+    // applies them automatically on older obfuscated versions.
+    loomx.applyMojangMappings()
 
+    // `mod*` configs work on 26.1+ too — loom-back-compat aliases them to the
+    // plain configs since the deobfuscated game needs no dependency remapping.
     modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
     modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
-    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
+    modRuntimeOnly("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 
     // --- Pure-JVM core deps (no Minecraft) ---
     // gson is already on the classpath transitively via Minecraft, but declare it
@@ -53,8 +60,8 @@ tasks.test {
 }
 
 kotlin {
-    // Minecraft 1.21.11 targets Java 21.
-    jvmToolchain(21)
+    // Minecraft 26.1.2 targets Java 25.
+    jvmToolchain(25)
 }
 
 tasks.processResources {
