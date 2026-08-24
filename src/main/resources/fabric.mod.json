@@ -11,7 +11,7 @@
   "license": "MIT",
   "environment": "client",
   "entrypoints": {
-    "main": [
+    "client": [
       "com.example.skyoceantracker.SkyOceanTrackerMod"
     ]
   },
@@ -20,7 +20,6 @@
     "fabricloader": ">=0.16.0",
     "fabric-api": "*",
     "fabric-language-kotlin": "*",
-    "skyocean": "*",
     "minecraft": "26.1.2"
   }
 }
