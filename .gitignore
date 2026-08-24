@@ -3,29 +3,21 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 
-# Kotlin
-.kotlin/
-
-# Fabric Loom
+# Loom
+.fabric/
+remappedSrc/
 run/
-.loom-cache/
 
-# IDE - IntelliJ
+# IDE
 .idea/
 *.iml
-*.ipr
-*.iws
-out/
-
-# IDE - Eclipse
-.classpath
-.project
+.vscode/
 .settings/
 bin/
-
-# IDE - VS Code
-.vscode/
+out/
 
 # OS
 .DS_Store
-Thumbs.db
+
+# Local recipe data cache (downloaded at runtime)
+/cache/

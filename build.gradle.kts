@@ -1,59 +1,65 @@
 plugins {
-    id("net.fabricmc.fabric-loom") version "1.17.19"
-    `maven-publish`
-    kotlin("jvm") version "2.4.10"
+    id("fabric-loom") version "1.15-SNAPSHOT"
+    kotlin("jvm") version "2.4.0"
 }
 
-version = "1.0.0"
-group = "com.example"
+val modVersion: String by project
+val mavenGroup: String by project
+val archivesBaseName: String by project
+
+version = modVersion
+group = mavenGroup
+base.archivesName.set(archivesBaseName)
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://maven.fabricmc.net/") }
-    maven { url = uri("https://maven.teamresourceful.com/repository/maven-public/") }
-    maven { url = uri("https://maven.parchmentmc.org/") }
-    maven { url = uri("https://api.modrinth.com/maven") }
+    maven("https://maven.fabricmc.net/") { name = "Fabric" }
 }
+
+val minecraftVersion: String by project
+val fabricLoaderVersion: String by project
+val fabricApiVersion: String by project
+val fabricLanguageKotlinVersion: String by project
 
 dependencies {
-    // Minecraft 26.x ships non-obfuscated, so Loom does not create the
-    // remapping configurations (mappings/modImplementation). We depend on the
-    // game directly and use plain implementation for mods.
-    "minecraft"("com.mojang:minecraft:26.1.2")
-    implementation("net.fabricmc:fabric-loader:0.19.3")
-    implementation("net.fabricmc.fabric-api:fabric-api:0.155.2+26.1.2")
-    implementation("net.fabricmc:fabric-language-kotlin:1.13.13+kotlin.2.4.10")
+    minecraft("com.mojang:minecraft:$minecraftVersion")
+    // A fresh mod: use official Mojang mappings so we don't depend on a Yarn
+    // build being published for 26.1.2. (SkyOcean uses its own mappings setup.)
+    mappings(loom.officialMojangMappings())
 
-    // SkyOcean dependency — pinned to the exact Modrinth version id of the
-    // 1.17.2 build for MC 26.1.2 (the plain "1.17.2" number is ambiguous, it
-    // also has a 26.2 build).
-    implementation("maven.modrinth:skyocean:wwN6ghcO")
-}
+    modImplementation("net.fabricmc:fabric-loader:$fabricLoaderVersion")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:$fabricApiVersion")
+    modImplementation("net.fabricmc:fabric-language-kotlin:$fabricLanguageKotlinVersion")
 
-tasks {
-    processResources {
-        inputs.property("version", project.version)
-        filteringCharset = "UTF-8"
-        filesMatching("fabric.mod.json") {
-            expand(
-                "version" to project.version,
-                "group" to project.group
-            )
-        }
-    }
+    // --- Pure-JVM core deps (no Minecraft) ---
+    // gson is already on the classpath transitively via Minecraft, but declare it
+    // so the core module compiles independently of the game.
+    implementation("com.google.code.gson:gson:2.12.1")
 
-    withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
-        options.release.set(25)
-    }
-}
-
-kotlin {
-    jvmToolchain(25)
+    testImplementation(kotlin("test"))
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.3")
 }
 
 loom {
-    // AbstractContainerScreen#leftPos / #topPos are protected; widen them so
-    // our helper objects (which are not subclasses) can read slot positions.
-    accessWidenerPath.set(file("src/main/resources/skyocean_item_tracker.accesswidener"))
+    runs {
+        named("client") {
+            // Hypixel SkyBlock is client-side; there is no dev server run of interest.
+        }
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+}
+
+kotlin {
+    // Minecraft 1.21.11 targets Java 21.
+    jvmToolchain(21)
+}
+
+tasks.processResources {
+    inputs.property("version", modVersion)
+    filesMatching("fabric.mod.json") {
+        expand("version" to modVersion)
+    }
 }

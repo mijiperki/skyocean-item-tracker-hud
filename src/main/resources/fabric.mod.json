@@ -1,26 +1,25 @@
 {
   "schemaVersion": 1,
-  "id": "skyocean-item-tracker",
+  "id": "multicraft",
   "version": "${version}",
-  "name": "SkyOcean Item Tracker HUD",
-  "description": "A custom item tracking HUD/overlay that integrates with SkyOcean's inventory and storage search functions",
-  "authors": [
-    "mijiperki"
-  ],
-  "contact": {},
+  "name": "MultiCraft Helper",
+  "description": "Track multiple Hypixel SkyBlock craft recipe trees on screen at once. Reimplements the single-item Craft Helper and lets you keep several active simultaneously.",
+  "authors": ["tperkins"],
   "license": "MIT",
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.example.skyoceantracker.SkyOceanTrackerMod"
+      {
+        "adapter": "kotlin",
+        "value": "dev.tperkins.multicraft.MultiCraftClient"
+      }
     ]
   },
   "mixins": [],
-  "accessWidener": "skyocean_item_tracker.accesswidener",
   "depends": {
-    "fabricloader": ">=0.16.0",
+    "fabricloader": ">=0.18.0",
     "fabric-api": "*",
-    "fabric-language-kotlin": "*",
-    "minecraft": "26.1.2"
+    "fabric-language-kotlin": ">=1.13.0",
+    "minecraft": "~26.1"
   }
 }

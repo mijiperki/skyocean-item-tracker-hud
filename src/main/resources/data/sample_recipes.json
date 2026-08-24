@@ -1,0 +1,32 @@
+{
+  "IRON_INGOT": {
+    "internalname": "IRON_INGOT",
+    "displayname": "Iron Ingot"
+  },
+  "ENCHANTED_IRON": {
+    "internalname": "ENCHANTED_IRON",
+    "displayname": "§aEnchanted Iron",
+    "recipes": [
+      {
+        "type": "crafting",
+        "A1": "", "A2": "IRON_INGOT:32", "A3": "",
+        "B1": "IRON_INGOT:32", "B2": "IRON_INGOT:32", "B3": "IRON_INGOT:32",
+        "C1": "", "C2": "IRON_INGOT:32", "C3": "",
+        "count": 1
+      }
+    ]
+  },
+  "ENCHANTED_IRON_BLOCK": {
+    "internalname": "ENCHANTED_IRON_BLOCK",
+    "displayname": "§aEnchanted Iron Block",
+    "recipes": [
+      {
+        "type": "crafting",
+        "A1": "ENCHANTED_IRON:1", "A2": "ENCHANTED_IRON:1", "A3": "ENCHANTED_IRON:1",
+        "B1": "ENCHANTED_IRON:1", "B2": "ENCHANTED_IRON:1", "B3": "ENCHANTED_IRON:1",
+        "C1": "ENCHANTED_IRON:1", "C2": "ENCHANTED_IRON:1", "C3": "ENCHANTED_IRON:1",
+        "count": 1
+      }
+    ]
+  }
+}

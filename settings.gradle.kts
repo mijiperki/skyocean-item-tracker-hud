@@ -1,9 +1,9 @@
 pluginManagement {
     repositories {
-        maven("https://maven.fabricmc.net/")
-        gradlePluginPortal()
         mavenCentral()
+        maven("https://maven.fabricmc.net/") { name = "Fabric" }
+        gradlePluginPortal()
     }
 }
 
-rootProject.name = "skyocean-item-tracker-hud"
+rootProject.name = "multicraft-helper"
